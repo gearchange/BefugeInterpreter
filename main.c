@@ -28,6 +28,14 @@ int cursor_direction = 0;
 stack_data_type *stack;
 int stack_size = 0;
 
+void init_interpreter(void){
+	for(int y = 0; y < program_y; y++) for(int x = 0; x < program_x; x++) program[x][y] = '\0';
+}
+
+void exit_interpreter(void){
+	free(stack);
+}
+
 void get_program(void){
 	for(int y = 0; y < program_y; y++){
 		char tmp_line[program_x];
@@ -48,6 +56,14 @@ void print_program(int cursor_x, int cursor_y){
 			else putchar(program[x][y]);
 		}
 		puts("|");
+	}
+}
+
+void print_stack(void){
+	for(int i = stack_size; i != 0; i--){
+		if(('!' <= stack[i - 1])&& (stack[i - 1] <= '~'))
+			printf("%6d\t%c\r\n", stack[i - 1], stack[i - 1]);
+		else printf("%6d\r\n", stack[i - 1]);
 	}
 }
 
@@ -210,12 +226,14 @@ void interpreter(void){
 
 int main(int argc, char** argv){
 
+	init_interpreter();
+
 	get_program();
+	print_program(-1, -1);
 
 	interpreter();
-	puts("");
 
-	print_program(-1, -1);
+	exit_interpreter();
 
 	return (EXIT_SUCCESS);
 
